@@ -33,6 +33,14 @@ func (rg *RoomRegistryActor) listRooms() any {
 	}
 }
 
+// فارسی: countActiveRooms فقط اندازه map داخلی Registry را برمی‌گرداند.
+// فارسی: این عدد برای سنجش ظرفیت actor روی یک ماشین سبک و مناسب است.
+func (rg *RoomRegistryActor) countActiveRooms() any {
+	return map[string]any{
+		"active_count": len(rg.rooms),
+	}
+}
+
 // فارسی: unloadRoom actor یک room را پایین می‌آورد ولی state را حذف نمی‌کند.
 // فارسی: این برای آزاد کردن حافظه roomهای idle مفید است.
 func (rg *RoomRegistryActor) unloadRoom(roomID string) Result {
@@ -54,6 +62,8 @@ func (rg *RoomRegistryActor) unloadRoom(roomID string) Result {
 	_ = rg.SendExit(pid, genTerminateShutdown())
 	delete(rg.rooms, roomID)
 
-	rg.Log().Info("room actor unloaded. room_id=%s active_rooms=%d", roomID, len(rg.rooms))
+	if verboseActorLogs() {
+		rg.Log().Info("room actor unloaded. room_id=%s active_rooms=%d", roomID, len(rg.rooms))
+	}
 	return OK()
 }

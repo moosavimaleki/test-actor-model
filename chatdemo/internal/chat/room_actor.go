@@ -63,7 +63,9 @@ func (r *RoomActor) Init(args ...any) error {
 	}
 
 	// فارسی: بعد از hydrate، actor آماده پردازش پیام‌های room است.
-	r.Log().Info("room actor started. room_id=%s pid=%s members=%d", r.roomID, r.PID(), len(r.members))
+	if verboseActorLogs() {
+		r.Log().Info("room actor started. room_id=%s pid=%s members=%d", r.roomID, r.PID(), len(r.members))
+	}
 	return nil
 }
 
@@ -95,5 +97,7 @@ func (r *RoomActor) HandleCall(from gen.PID, ref gen.Ref, request any) (any, err
 // فارسی: Terminate جای کار سنگین نیست.
 // فارسی: snapshot نهایی باید قبل از این، در DrainRegistry نوشته شده باشد.
 func (r *RoomActor) Terminate(reason error) {
-	r.Log().Info("room actor stopped. room_id=%s reason=%v", r.roomID, reason)
+	if verboseActorLogs() {
+		r.Log().Info("room actor stopped. room_id=%s reason=%v", r.roomID, reason)
+	}
 }

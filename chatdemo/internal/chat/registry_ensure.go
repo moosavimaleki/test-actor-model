@@ -45,7 +45,9 @@ func (rg *RoomRegistryActor) ensureRoom(roomID string) (gen.PID, Result) {
 	}
 
 	rg.rooms[roomID] = pid
-	rg.Log().Info("room actor loaded. room_id=%s pid=%s active_rooms=%d", roomID, pid, len(rg.rooms))
+	if verboseActorLogs() {
+		rg.Log().Info("room actor loaded. room_id=%s pid=%s active_rooms=%d", roomID, pid, len(rg.rooms))
+	}
 	return pid, OK()
 }
 

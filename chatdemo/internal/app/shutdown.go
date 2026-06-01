@@ -15,6 +15,8 @@ import (
 	"actor-chat-demo/internal/chat"
 )
 
+const defaultShutdownTimeout = 10 * time.Second
+
 // فارسی: newSignalContext contextای می‌سازد که با Ctrl+C یا SIGTERM cancel می‌شود.
 // فارسی: SIGTERM همان signal رایج shutdown در container و systemd است.
 func newSignalContext() (context.Context, context.CancelFunc) {
@@ -43,7 +45,7 @@ func waitForShutdown(signalCtx context.Context, serverErr <-chan error) error {
 func shutdown(server *http.Server, node gen.Node, registryPID gen.PID) error {
 	// فارسی: برای Shutdown از context تازه استفاده می‌کنیم.
 	// فارسی: signalCtx قبلی cancel شده و برای کار جدید مناسب نیست.
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout())
 	defer cancel()
 
 	if err := server.Shutdown(shutdownCtx); err != nil {
@@ -65,6 +67,23 @@ func shutdown(server *http.Server, node gen.Node, registryPID gen.PID) error {
 
 	log.Println("shutdown complete")
 	return nil
+}
+
+// فارسی: shutdownTimeout زمان مجاز برای HTTP shutdown و Registry drain را می‌دهد.
+// فارسی: برای تست ۱ میلیون actor، مقدار پیش‌فرض ۱۰ ثانیه کم است؛ مثلا CHAT_SHUTDOWN_TIMEOUT=5m بده.
+func shutdownTimeout() time.Duration {
+	raw := os.Getenv("CHAT_SHUTDOWN_TIMEOUT")
+	if raw == "" {
+		return defaultShutdownTimeout
+	}
+
+	timeout, err := time.ParseDuration(raw)
+	if err != nil {
+		log.Printf("invalid CHAT_SHUTDOWN_TIMEOUT=%q, using %s", raw, defaultShutdownTimeout)
+		return defaultShutdownTimeout
+	}
+
+	return timeout
 }
 
 // فارسی: closeRedis آخرین مرحله shutdown است.

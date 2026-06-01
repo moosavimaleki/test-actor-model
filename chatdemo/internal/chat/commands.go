@@ -48,6 +48,10 @@ type GetRoom struct {
 // فارسی: ListRooms درخواست لیست roomهای شناخته‌شده در Redis است.
 type ListRooms struct{}
 
+// فارسی: CountActiveRooms فقط تعداد actorهای room فعال در همین runtime را می‌خواهد.
+// فارسی: این برای load test بهتر از ListRooms است چون لیست ۱ میلیون room را serialize نمی‌کند.
+type CountActiveRooms struct{}
+
 // فارسی: ListMessages درخواست خواندن history پیام‌های یک room است.
 // فارسی: Limit جلوی برگشتن حجم زیاد داده را می‌گیرد.
 type ListMessages struct {

@@ -1,6 +1,10 @@
 package chat
 
-import "ergo.services/ergo/gen"
+import (
+	"strings"
+
+	"ergo.services/ergo/gen"
+)
 
 // فارسی: drainAllRooms برای shutdown یا deploy امن استفاده می‌شود.
 // فارسی: اول همه roomها snapshot می‌زنند، بعد actorها stop می‌شوند.
@@ -12,6 +16,12 @@ func (rg *RoomRegistryActor) drainAllRooms() Result {
 	for roomID, pid := range rg.rooms {
 		resAny, err := rg.Call(pid, DrainRegistry{})
 		if err != nil {
+			// فارسی: اگر PID قبلاً از بین رفته باشد، دیگر چیزی برای drain کردن نداریم.
+			// فارسی: در تست‌های سنگین بهتر است shutdown ادامه پیدا کند و map تمیز شود.
+			if strings.Contains(err.Error(), "unknown process") {
+				delete(rg.rooms, roomID)
+				continue
+			}
 			return Fail("drain room " + roomID + " failed: " + err.Error())
 		}
 

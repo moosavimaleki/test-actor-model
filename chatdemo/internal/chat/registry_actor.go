@@ -82,6 +82,8 @@ func (rg *RoomRegistryActor) HandleCall(from gen.PID, ref gen.Ref, request any) 
 		return rg.routeToRoom(req.RoomID, req)
 	case ListRooms:
 		return rg.listRooms(), nil
+	case CountActiveRooms:
+		return rg.countActiveRooms(), nil
 	case UnloadRoom:
 		return rg.unloadRoom(req.RoomID), nil
 	case DrainRegistry:

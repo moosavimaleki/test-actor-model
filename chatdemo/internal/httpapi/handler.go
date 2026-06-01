@@ -26,6 +26,8 @@ func New(node gen.Node, registryPID gen.PID) http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /healthz", api.healthz)
+	mux.HandleFunc("GET /debug/runtime", api.debugRuntime)
+	mux.HandleFunc("GET /debug/actors", api.debugActors)
 	mux.HandleFunc("GET /ws", api.websocket)
 	mux.HandleFunc("GET /rooms", api.listRooms)
 	mux.HandleFunc("POST /rooms", api.createRoom)
