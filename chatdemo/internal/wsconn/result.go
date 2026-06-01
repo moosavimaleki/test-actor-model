@@ -2,6 +2,8 @@ package wsconn
 
 import "actor-chat-demo/internal/chat"
 
+// فارسی: writeActorResult جواب actorها را به ServerFrame تبدیل می‌کند.
+// فارسی: این معادل WebSocket نسخه writeActorResult در HTTP adapter است.
 func (a *Actor) writeActorResult(frameType, roomID string, result any, err error) bool {
 	if err != nil {
 		a.enqueue(ServerFrame{Type: frameType, RoomID: roomID, Error: err.Error()})
@@ -22,6 +24,7 @@ func (a *Actor) writeActorResult(frameType, roomID string, result any, err error
 	return true
 }
 
+// فارسی: enqueueFail یک error frame ساده برای protocol error می‌سازد.
 func (a *Actor) enqueueFail(message string) {
 	a.enqueue(ServerFrame{Type: "error", Error: message})
 }

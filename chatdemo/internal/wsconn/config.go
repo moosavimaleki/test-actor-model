@@ -6,9 +6,15 @@ import (
 	"ergo.services/ergo/gen"
 )
 
+// فارسی: Config وابستگی‌های لازم برای ساخت WSConnectionActor است.
+// فارسی: HTTP handler بعد از upgrade شدن socket این config را به actor می‌دهد.
 type Config struct {
-	Node        gen.Node
+	// فارسی: Node برای Send کردن پیام از readLoop به mailbox همین actor لازم است.
+	Node gen.Node
+	// فارسی: RegistryPID آدرس actor رجیستری است؛ connection actor commandها را به آن می‌فرستد.
 	RegistryPID gen.PID
-	ConnID      string
-	Conn        *websocket.Conn
+	// فارسی: ConnID فقط برای log و debug است.
+	ConnID string
+	// فارسی: Conn خود اتصال WebSocket است و فقط داخل WSConnectionActor مدیریت می‌شود.
+	Conn *websocket.Conn
 }

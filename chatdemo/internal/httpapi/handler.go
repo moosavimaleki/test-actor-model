@@ -10,7 +10,7 @@ import (
 // فارسی: state اصلی همچنان داخل actorهاست؛ این لایه فقط protocol adapter است.
 type Handler struct {
 	// فارسی: node برای Spawn کردن WSConnectionActor و Call زدن به actorها لازم است.
-	node        gen.Node
+	node gen.Node
 	// فارسی: registryPID آدرس runtime رجیستری است و همه requestهای دامنه از آن عبور می‌کنند.
 	registryPID gen.PID
 }

@@ -6,6 +6,8 @@ import (
 	"actor-chat-demo/internal/chat"
 )
 
+// فارسی: handleClientFrame نقطه تبدیل protocol به command است.
+// فارسی: اینجا JSON WebSocket را به JoinRoom/PostMessage و queryهای actor system تبدیل می‌کنیم.
 func (a *Actor) handleClientFrame(frame ClientFrame) {
 	switch strings.TrimSpace(frame.Type) {
 	case "join":
@@ -27,6 +29,8 @@ func (a *Actor) handleClientFrame(frame ClientFrame) {
 	}
 }
 
+// فارسی: joinRoom یک frame از client را به command JoinRoom تبدیل می‌کند.
+// فارسی: PID همین actor هم پاس داده می‌شود تا RoomActor بداند این nick به کدام socket وصل است.
 func (a *Actor) joinRoom(frame ClientFrame) {
 	roomID := strings.TrimSpace(frame.RoomID)
 	nick := strings.TrimSpace(frame.Nick)
@@ -40,9 +44,12 @@ func (a *Actor) joinRoom(frame ClientFrame) {
 		return
 	}
 
+	// فارسی: فقط بعد از موفقیت actor، state local connection را update می‌کنیم.
 	a.joined[roomID] = nick
 }
 
+// فارسی: leaveRoom از room خارج می‌شود.
+// فارسی: اگر client nick نفرستد، nick همان join قبلی این connection استفاده می‌شود.
 func (a *Actor) leaveRoom(frame ClientFrame) {
 	roomID := strings.TrimSpace(frame.RoomID)
 	nick := strings.TrimSpace(frame.Nick)
@@ -62,6 +69,8 @@ func (a *Actor) leaveRoom(frame ClientFrame) {
 	delete(a.joined, roomID)
 }
 
+// فارسی: postMessage پیام WebSocket را به PostMessage actor command تبدیل می‌کند.
+// فارسی: اگر frame nick نداشته باشد، nick از state همین connection برداشته می‌شود.
 func (a *Actor) postMessage(frame ClientFrame) {
 	roomID := strings.TrimSpace(frame.RoomID)
 	from := strings.TrimSpace(frame.Nick)
